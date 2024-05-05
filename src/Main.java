@@ -10,7 +10,7 @@ public class Main {
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_PURPLE = "\u001B[35m";
-    
+    public static final String ANSI_GREEN = "\u001B[32m";
     // @Override
     // public void start(Stage primaryStage) throws Exception {
     //     Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
@@ -26,6 +26,10 @@ public class Main {
         WordLadderSolver wordLadderSolver = new WordLadderSolver();
 
         String startWord;
+        System.out.println(ANSI_GREEN+"******************************************************************");
+        System.out.println("********* Selamat bermain di program Word Ladder Solver! *********");
+        System.out.println("******************************************************************" + ANSI_RESET);
+
         System.out.print("Masukkan kata awal (start word): ");
         startWord = scanner.nextLine().toLowerCase();
         
@@ -59,7 +63,7 @@ public class Main {
         int choice = scanner.nextInt();
         scanner.nextLine(); // Membersihkan karakter newline
 
-        List<String> path = null;
+        List<Object> path = null;
         long startTime = System.currentTimeMillis();
         switch (choice) {
             case 1:
@@ -81,13 +85,17 @@ public class Main {
         }
 
         long endTime = System.currentTimeMillis();
-        Output.printWordLadder(path);
-        Output.printStepCount(path.size()); // Kurangi 1 karena jumlah langkah sama dengan jumlah node dikunjungi minus 1
+        int exploredNodes = (int) path.get(1);
+        @SuppressWarnings("unchecked")
+        List<String> pathList =(List<String>) path.get(0);
+        Output.printWordLadder(pathList);
+        Output.printStepCount(exploredNodes); // Kurangi 1 karena jumlah langkah sama dengan jumlah node dikunjungi minus 1
         Output.printExecutionTime(startTime, endTime);
 
         System.out.print("Apakah Anda ingin keluar? (Y/N): ");
         String exitChoice = scanner.nextLine().toUpperCase();
         if (exitChoice.equals("Y")) {
+            System.out.println(ANSI_GREEN+"Terima kasih telah menggunakan program Word Ladder Solver!"+ANSI_RESET);
             return;
         }else{
             System.out.println("");

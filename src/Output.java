@@ -7,8 +7,12 @@ public class Output {
             System.out.println("\nTidak ada jalur yang ditemukan.");
         } else {
             System.out.println("\nJalur Word Ladder:");
-            for (String word : path) {
-                System.out.println(word);
+            if (path.isEmpty()) {
+                System.out.println("Tidak ada jalur yang ditemukan.");
+            } else {
+                for (String word : path) {
+                    System.out.println(word);
+                }
             }
         }
     }
