@@ -23,7 +23,7 @@ Unduh dan Instal JDK (https://www.oracle.com/java/technologies/downloads/#java8)
 
     `javac Main.java`
 
-    `java`
+    `java Main`
 
 ## Contact
 Created by 13522035 - Melati Anggraini
