@@ -92,20 +92,22 @@ public class Main {
                 System.out.println("Pilihan algoritma tidak valid.");
                 return;
         }
-        // Periksa apakah jalur ditemukan atau tidak
-        if (path == null) {
-            System.out.println(ANSI_PURPLE + "Ooppss!! Tidak ada jalur yang ditemukan!!" + ANSI_RESET);
-        }
-
         long endTime = System.currentTimeMillis();
-        int exploredNodes = (int) path.get(1);
+
         @SuppressWarnings("unchecked")
         List<String> pathList =(List<String>) path.get(0);
+        int exploredNodes = (int) path.get(1);
+        System.out.println("Path: " + pathList);
+
         Output.printWordLadderCLI(pathList);
         Output.printStepCountCLI(exploredNodes); // Kurangi 1 karena jumlah langkah sama dengan jumlah node dikunjungi minus 1
         Output.printExecutionTimeCLI(startTime, endTime);
+        NextOROut();
+    }
 
-        System.out.print("Apakah Anda ingin keluar? (Y/N): ");
+    public static void NextOROut(){
+        System.out.println("Apakah Anda ingin keluar? (Y/N): ");
+        Scanner scanner = new Scanner(System.in);
         String exitChoice = scanner.nextLine().toUpperCase();
         if (exitChoice.equals("Y")) {
             System.out.println(ANSI_GREEN+"Terima kasih telah menggunakan program Word Ladder Solver!"+ANSI_RESET);
@@ -116,7 +118,6 @@ public class Main {
             System.out.println(ANSI_RED+"Pilihan tidak valid."+ANSI_RESET);
         }
     }
-
 
     public static void RunGUI() { // Ubah "RunGUI()" menjadi "RunGUI()"
         SwingUtilities.invokeLater(() -> {

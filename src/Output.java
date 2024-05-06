@@ -10,11 +10,11 @@ public class Output {
     public static void printWordLadder(List<String> path, JTextArea outputTextArea) {
         outputTextArea.setFont(new Font("Poppins", Font.PLAIN, 16));
         if (path == null) {
-            outputTextArea.append("\nNo path found.\n");
+            outputTextArea.append("\nPath tidak ditemukan.\n");
         } else {
             outputTextArea.append("\nWord Ladder Path: ");
             if (path.isEmpty()) {
-                outputTextArea.append("No path found.\n");
+                outputTextArea.append("Path tidak ditemukan..\n");
             } else {
                 for (String word : path) {
                     if(path.indexOf(word) == path.size()-1) {
@@ -30,11 +30,11 @@ public class Output {
     // Method to print Word Ladder path using CLI
     public static void printWordLadderCLI(List<String> path) {
         if (path == null) {
-            System.out.println("\nNo path found.\n");
+            System.out.println("\nPath tidak ditemukan..\n");
         } else {
             System.out.println("\nWord Ladder Path:\n");
             if (path.isEmpty()) {
-                System.out.println("No path found.\n");
+                System.out.println("Path tidak ditemukan..\n");
             } else {
                 for (String word : path) {
                     System.out.println(word);

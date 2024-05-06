@@ -5,6 +5,7 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class WordLadderSolver {
 
@@ -102,7 +103,10 @@ public class WordLadderSolver {
 
         // Jika tidak ada path yang ditemukan, return null
         if (!costSoFar.containsKey(endWord)) {
-            return null;
+            List<Object> result = new ArrayList<>();
+            result.add(null);
+            result.add(exploredNodes);
+            return result;
         }
 
         // Rekonstruksi path dari startWord ke endWord
@@ -136,48 +140,72 @@ public class WordLadderSolver {
     }
 
     public List<Object> solveGreedyBestFirstSearch(String startWord, String endWord, English dictionary) {
-        // Inisialisasi priority queue untuk Greedy BFS
-        PriorityQueue<QueueElementGreedyBFS> queueGreedyBFS = new PriorityQueue<>();
-        QueueElementGreedyBFS node = new QueueElementGreedyBFS(heuristic(startWord, endWord), startWord);
-        queueGreedyBFS.add(node);
-
         // Inisialisasi path
         Map<String, String> rawPath = new HashMap<>();
         Set<String> explored = new HashSet<>();
         int exploredNodes = 0;
+        
+        rawPath.put(startWord, null);
 
-        while (!queueGreedyBFS.isEmpty()) {
-            QueueElementGreedyBFS currentElement = queueGreedyBFS.poll();
-            String currentWord = currentElement.word;
-            exploredNodes++;
-
-            // Jika kata saat ini adalah kata akhir, maka pencarian selesai
-            if (currentWord.equals(endWord)) {
-                break;
-            }
-
-            // Tandai kata saat ini sebagai sudah dieksplorasi
-            explored.add(currentWord);
-            // Cari node-node tetangga yang berbeda satu huruf dengan kata saat ini
-            List<String> neighbors = findNeighbors(currentWord, dictionary);
-            // System.out.println(neighbors);
-
-            for (String neighbor : neighbors) {
-                if (!explored.contains(neighbor)) {
-                    double priority = heuristic(neighbor, endWord);
-                    // System.out.println("nilai heuristic"+priority);
-                    QueueElementGreedyBFS newElement = new QueueElementGreedyBFS(priority, neighbor);
-                    queueGreedyBFS.add(newElement);
-                    rawPath.put(neighbor, currentWord);
-
+       while(true){
+        String currentWord = null;
+        exploredNodes++;
+        double minPriority = Double.MAX_VALUE;
+        // pilih node dengan prioritas minimum yang belum dieksplorasi 
+        for(String word : rawPath.keySet()){
+            if(!explored.contains(word)){
+                double priority = heuristic(word, endWord);
+                if(priority < minPriority){
+                    minPriority = priority;
+                    currentWord = word;
                 }
             }
         }
 
-        // Jika tidak ada jalur yang ditemukan, kembalikan null
-        if (!rawPath.containsKey(endWord)) {
-            return null;
+        // Jika kata saat ini adalah kata akhir, maka pencarian selesai
+        if(currentWord == null){
+            System.out.println("path kosong");
+            List<Object> result = new ArrayList<>();
+            result.add(null);
+            result.add(exploredNodes);
+            return result;
         }
+        if (currentWord != null && currentWord.equals(endWord)) {
+            break;
+        }
+      
+        // Tandai kata saat ini sebagai sudah dieksplorasi
+        explored.add(currentWord);
+
+        // Cari node-node tetangga yang berbeda satu huruf dengan kata saat ini
+        List<String> neighbors = findNeighbors(currentWord, dictionary);
+
+        // Urutkan tetangga berdasarkan abjad dan prioritas posisi
+        final String finalCurrentWord = currentWord;
+        neighbors.sort(new Comparator<String>() {
+            @Override
+            public int compare(String word1, String word2) {
+                // Prioritaskan berdasarkan urutan abjad
+                int compareAlpha = word1.compareTo(word2);
+                if (compareAlpha != 0) {
+                    return compareAlpha;
+                } else {
+                    // Jika urutan abjad sama, prioritas posisi dari kiri ke kanan
+                    return finalCurrentWord.indexOf(word1.charAt(0)) - finalCurrentWord.indexOf(word2.charAt(0));
+                }
+            }
+        });
+        
+        System.out.println(neighbors);
+        for (String neighbor : neighbors) {
+            if (!explored.contains(neighbor)) {
+                // Jika node tetangga belum pernah dikunjungi, tambahkan ke path
+                if (!rawPath.containsKey(neighbor)) {
+                    rawPath.put(neighbor, currentWord);
+                }
+            }
+        }
+       }
 
         // Rekonstruksi path dari startWord ke endWord
         List<String> path = new ArrayList<>();
@@ -186,8 +214,16 @@ public class WordLadderSolver {
             path.add(0, word);
             word = rawPath.get(word);
         }
-        path.add(0, startWord);
+        rawPath.clear();
+        System.out.println(" gbfs path"+path);
+        // Jika tidak ada path yang ditemukan, return null
 
+        System.out.println("path gbfs tidak kosng"+path);
+        // Jika path ditemukan, tambahkan startWord ke path
+        if (!path.get(0).equals(startWord)) {
+            path.add(0, startWord);
+        }
+        // Tambahkan endWord ke path
         List<Object> result = new ArrayList<>();
         result.add(path);
         result.add(exploredNodes);
@@ -242,7 +278,10 @@ public class WordLadderSolver {
 
         // Jika tidak ada path yang ditemukan, kembalikan null
         if (!costSoFar.containsKey(endWord)) {
-            return null;
+            List<Object> result = new ArrayList<>();
+            result.add(null);
+            result.add(exploredNodes);
+            return result;
         }
 
         // Rekonstruksi path dari startWord ke endWord

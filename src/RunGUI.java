@@ -122,6 +122,7 @@ public class RunGUI extends JFrame {
     }
 
     private void solveWordLadder() {
+        outputTextArea.setText("");
         String startWord = startTextField.getText().toLowerCase();
         String endWord = endTextField.getText().toLowerCase();
         int choice = algorithmComboBox.getSelectedIndex() + 1;
@@ -173,15 +174,9 @@ public class RunGUI extends JFrame {
                 outputTextArea.append("Invalid algorithm choice.");
                 return;
         }
-
-        // Check if path is found
-        if (path == null) {
-            outputTextArea.append(ANSI_PURPLE + "Oops!! No path found!!\n");
-            return;
-        }
-
         long endTime = System.currentTimeMillis();
         int exploredNodes = (int) path.get(1);
+        
         @SuppressWarnings("unchecked")
         List<String> pathList = (List<String>) path.get(0);
         Output.printWordLadder(pathList, outputTextArea);
