@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class WordLadderSolver {
 
-    // Metode untuk mencari kata-kata tetangga yang berbeda satu huruf dengan kata tertentu
+    // Metode untuk mencari node-node tetangga yang berbeda satu huruf dengan kata tertentu
     private List<String> findNeighbors(String word, English dictionary) {
         List<String> neighbors = new ArrayList<>();
         // Iterasi melalui semua kata dalam kamus
@@ -158,16 +158,18 @@ public class WordLadderSolver {
 
             // Tandai kata saat ini sebagai sudah dieksplorasi
             explored.add(currentWord);
-
             // Cari node-node tetangga yang berbeda satu huruf dengan kata saat ini
             List<String> neighbors = findNeighbors(currentWord, dictionary);
+            // System.out.println(neighbors);
 
             for (String neighbor : neighbors) {
                 if (!explored.contains(neighbor)) {
                     double priority = heuristic(neighbor, endWord);
+                    // System.out.println("nilai heuristic"+priority);
                     QueueElementGreedyBFS newElement = new QueueElementGreedyBFS(priority, neighbor);
                     queueGreedyBFS.add(newElement);
                     rawPath.put(neighbor, currentWord);
+
                 }
             }
         }
@@ -207,9 +209,9 @@ public class WordLadderSolver {
         int exploredNodes = 0;
 
         while (!queueAStar.isEmpty()) {
-            QueueElementGreedyBFS currentElement = queueAStar.poll();
-            String currentWord = currentElement.word;
-            exploredNodes++;
+            QueueElementGreedyBFS currentElement = queueAStar.poll(); // Ambil node dengan prioritas terendah dari antrian prioritas
+            String currentWord = currentElement.word; 
+            exploredNodes++; 
 
             // Jika kata saat ini adalah kata akhir, maka pencarian selesai
             if (currentWord.equals(endWord)) {

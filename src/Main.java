@@ -1,26 +1,39 @@
-import java.util.Scanner;
 import java.util.List;
-// import javafx.application.Application;
-// import javafx.fxml.FXMLLoader;
-// import javafx.scene.Parent;
-// import javafx.scene.Scene;
-// import javafx.stage.Stage;
+import java.util.Scanner;
+import javax.swing.SwingUtilities;
 
 public class Main {
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_GREEN = "\u001B[32m";
-    // @Override
-    // public void start(Stage primaryStage) throws Exception {
-    //     Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
-    //     primaryStage.setTitle("Word Ladder");
-    //     primaryStage.setScene(new Scene(root, 300, 275));
-    //     primaryStage.show();
-    // }
 
     public static void main(String[] args) {
-        // launch(args);
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Choose input method: (1 = CLI, 2 = GUI , 3 = Exit)");
+        if (scanner.hasNextInt()) {
+            int inputChoice = scanner.nextInt();
+            if (inputChoice == 1) {
+                // Input via CLI
+                runCLI();
+            } else if (inputChoice == 2) {
+                // Input via GUI
+                RunGUI();
+            } else if (inputChoice == 3) {
+                return;
+            } else {
+                System.out.println("Invalid input method choice.");
+                main(args);
+            }
+        } else {
+            String invalidInput = scanner.next(); // Ambil input yang tidak valid
+            System.out.println("Invalid input method choice: " + invalidInput + ". Please enter a valid integer.");
+            main(args);
+        }
+    }
+
+
+    public static void runCLI() {
         Scanner scanner = new Scanner(System.in);
         English dictionary = new English();
         WordLadderSolver wordLadderSolver = new WordLadderSolver();
@@ -88,18 +101,27 @@ public class Main {
         int exploredNodes = (int) path.get(1);
         @SuppressWarnings("unchecked")
         List<String> pathList =(List<String>) path.get(0);
-        Output.printWordLadder(pathList);
-        Output.printStepCount(exploredNodes); // Kurangi 1 karena jumlah langkah sama dengan jumlah node dikunjungi minus 1
-        Output.printExecutionTime(startTime, endTime);
+        Output.printWordLadderCLI(pathList);
+        Output.printStepCountCLI(exploredNodes); // Kurangi 1 karena jumlah langkah sama dengan jumlah node dikunjungi minus 1
+        Output.printExecutionTimeCLI(startTime, endTime);
 
         System.out.print("Apakah Anda ingin keluar? (Y/N): ");
         String exitChoice = scanner.nextLine().toUpperCase();
         if (exitChoice.equals("Y")) {
             System.out.println(ANSI_GREEN+"Terima kasih telah menggunakan program Word Ladder Solver!"+ANSI_RESET);
             return;
-        }else{
-            System.out.println("");
-            main(args);
+        } else if (exitChoice.equals("N")) {
+            runCLI();
+        } else {
+            System.out.println(ANSI_RED+"Pilihan tidak valid."+ANSI_RESET);
         }
     }
-}  
+
+
+    public static void RunGUI() { // Ubah "RunGUI()" menjadi "RunGUI()"
+        SwingUtilities.invokeLater(() -> {
+            RunGUI gui = new RunGUI();
+            gui.setVisible(true);
+        });
+    }
+}

@@ -1,14 +1,40 @@
+import java.awt.Font;
 import java.util.List;
+import javax.swing.JTextArea;
 
 public class Output {
-    // Metode untuk mencetak jalur Word Ladder ke layar
-    public static void printWordLadder(List<String> path) {
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_RESET = "\u001B[0m";
+
+    // Method to print Word Ladder path to JTextArea
+    public static void printWordLadder(List<String> path, JTextArea outputTextArea) {
+        outputTextArea.setFont(new Font("Poppins", Font.PLAIN, 16));
         if (path == null) {
-            System.out.println("\nTidak ada jalur yang ditemukan.");
+            outputTextArea.append("\nNo path found.\n");
         } else {
-            System.out.println("\nJalur Word Ladder:");
+            outputTextArea.append("\nWord Ladder Path: ");
             if (path.isEmpty()) {
-                System.out.println("Tidak ada jalur yang ditemukan.");
+                outputTextArea.append("No path found.\n");
+            } else {
+                for (String word : path) {
+                    if(path.indexOf(word) == path.size()-1) {
+                        outputTextArea.append(word);
+                    } else {
+                        outputTextArea.append(word + "-->");
+                    }
+                }
+            }
+        }
+        outputTextArea.append("\nPanjang path : " + path.size() + "\n");
+    }
+    // Method to print Word Ladder path using CLI
+    public static void printWordLadderCLI(List<String> path) {
+        if (path == null) {
+            System.out.println("\nNo path found.\n");
+        } else {
+            System.out.println("\nWord Ladder Path:\n");
+            if (path.isEmpty()) {
+                System.out.println("No path found.\n");
             } else {
                 for (String word : path) {
                     System.out.println(word);
@@ -16,15 +42,28 @@ public class Output {
             }
         }
     }
-
-    // Metode untuk mencetak jumlah langkah yang diperlukan
-    public static void printStepCount(int exploredNodes) {
-        System.out.println("Banyaknya node yang dikunjungi: " + exploredNodes);
+    // Methid to print the Banyak node yang dikunjungi using CLI   
+    public static void printStepCountCLI(int exploredNodes) {
+        System.out.println("Banyak node yang dikunjungi: " + exploredNodes);
+    }
+    // Method to print the Banyak node yang dikunjungi to JTextArea
+    public static void printStepCount(int exploredNodes, JTextArea outputTextArea) {
+        outputTextArea.setFont(new Font("Poppins", Font.PLAIN, 16));
+        outputTextArea.append("Banyak node yang dikunjungi: " + exploredNodes + "\n");
     }
 
-    // Metode untuk mencetak waktu eksekusi
-    public static void printExecutionTime(long startTime, long endTime) {
-        long executionTime = endTime - startTime;
-        System.out.println("Waktu eksekusi: " + executionTime + " milidetik");
+    // Method to print Waktu Eksekusi to JTextArea
+    public static void printExecutionTime(long startTime, long endTime, JTextArea outputTextArea) {
+        outputTextArea.setFont(new Font("Poppins", Font.PLAIN, 16));
+        double executionTime = (double) (endTime - startTime) / 1000.0;
+        String formattedExecutionTime = String.format("%.8f", (double) executionTime);
+        outputTextArea.append("Waktu Eksekusi: " + formattedExecutionTime + " detik\n");
+    }
+
+    // Method to print Waktu Eksekusi using CLI
+    public static void printExecutionTimeCLI(long startTime, long endTime) {
+        double executionTime = (double) (endTime - startTime) / 1000.0;
+        String formattedExecutionTime = String.format("%.8f", (double) executionTime);
+        System.out.println("Waktu Eksekusi: " + formattedExecutionTime + " detik\n");
     }
 }
