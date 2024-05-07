@@ -1,11 +1,2 @@
-antis
-antes
-anted
-acted
-acred
-acres
-aures
-lures
-luces
-lucks
-lucky
+snake
+world

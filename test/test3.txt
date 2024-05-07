@@ -1,6 +1,2 @@
-home
-mome
-mime
-mice
-mick
-sick
+head
+tail

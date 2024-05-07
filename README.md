@@ -17,7 +17,8 @@ Unduh dan Instal JDK (https://www.oracle.com/java/technologies/downloads/#java8)
 
 ## Cara Menjalankan Program dan Menggunakan Program
 
-1. Masuk ke folder src
+1. Masuk ke folder src 
+    `cd .\src\`
 
 2. Masukkan command berikut : 
 
