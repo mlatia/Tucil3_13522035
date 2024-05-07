@@ -7,7 +7,6 @@ public class Main {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_GREEN = "\u001B[32m";
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Choose input method: (1 = CLI, 2 = GUI , 3 = Exit)");
@@ -97,7 +96,6 @@ public class Main {
         @SuppressWarnings("unchecked")
         List<String> pathList =(List<String>) path.get(0);
         int exploredNodes = (int) path.get(1);
-        System.out.println("Path: " + pathList);
 
         Output.printWordLadderCLI(pathList);
         Output.printStepCountCLI(exploredNodes); // Kurangi 1 karena jumlah langkah sama dengan jumlah node dikunjungi minus 1

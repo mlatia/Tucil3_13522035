@@ -8,7 +8,6 @@ import java.util.List;
 public class RunGUI extends JFrame {
     private static final String ANSI_PURPLE = "\u001B[35m";
     private static final String ANSI_RESET = "\u001B[0m";
-
     private JTextField startTextField;
     private JTextField endTextField;
     private JComboBox<String> algorithmComboBox;
@@ -155,7 +154,15 @@ public class RunGUI extends JFrame {
             });
             return; // Keluar dari metode jika kata tidak valid
         }
-    
+
+        if(startWord.length() != endWord.length()) {
+            // Kata tidak valid, tampilkan pesan kesalahan
+            SwingUtilities.invokeLater(() -> {
+                JOptionPane.showMessageDialog(this, "Tolong masukkan kata yang memiliki panjang yang sama dengan kata awal.", "Kesalahan", JOptionPane.ERROR_MESSAGE);
+            });
+            return; // Keluar dari metode jika kata tidak valid
+        }
+
         WordLadderSolver wordLadderSolver = new WordLadderSolver();
 
         List<Object> path = null;
@@ -185,12 +192,5 @@ public class RunGUI extends JFrame {
         // Perbarui tampilan
         revalidate();
         repaint();
-
-    }
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            RunGUI gui = new RunGUI();
-            gui.setVisible(true);
-        });
     }
 }

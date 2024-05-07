@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 
 public class WordLadderSolver {
 
@@ -32,7 +33,20 @@ public class WordLadderSolver {
         }
         return count;
     }
-    
+
+    static class QueueElementGreedyAStar implements Comparable<QueueElementGreedyAStar> {
+        double heuristic_score;
+        String word;
+        public QueueElementGreedyAStar(double heuristic_score, String word) {
+            this.heuristic_score = heuristic_score;
+            this.word = word;
+        }
+        @Override
+        public int compareTo(QueueElementGreedyAStar other) {
+            return Double.compare(this.heuristic_score, other.heuristic_score);
+        }
+    }
+
     // Metode untuk menghitung estimasi biaya dari suatu kata ke tujuan
     private double heuristic(String currentWord, String endWord) {
         // Misalnya, kita menggunakan jumlah karakter yang berbeda antara kata saat ini dan kata akhir sebagai heuristik
@@ -43,12 +57,10 @@ public class WordLadderSolver {
     static class QueueElementUCS implements Comparable<QueueElementUCS> {
         double final_score;
         String word;
-
         public QueueElementUCS(double final_score, String word) {
             this.final_score = final_score;
             this.word = word;
         }
-
         @Override
         public int compareTo(QueueElementUCS other) {
             return Double.compare(this.final_score, other.final_score);
@@ -83,7 +95,12 @@ public class WordLadderSolver {
 
             // Cari node-node tetangga yang berbeda satu huruf dengan kata(node) saat ini
             List<String> neighbors = findNeighbors(currentWord, dictionary);
-
+            neighbors.sort(new Comparator<String>() {
+                @Override
+                public int compare(String word1, String word2) {
+                    return word1.compareTo(word2);
+                }
+            });
             for (String neighbor : neighbors) {
                 if (!explored.contains(neighbor)) {
                     // update cost, selalu 1 karena perbedaan hanya satu huruf
@@ -124,21 +141,6 @@ public class WordLadderSolver {
         return result;
     }
 
-    static class QueueElementGreedyBFS implements Comparable<QueueElementGreedyBFS> {
-        double heuristic_score;
-        String word;
-
-        public QueueElementGreedyBFS(double heuristic_score, String word) {
-            this.heuristic_score = heuristic_score;
-            this.word = word;
-        }
-
-        @Override
-        public int compareTo(QueueElementGreedyBFS other) {
-            return Double.compare(this.heuristic_score, other.heuristic_score);
-        }
-    }
-
     public List<Object> solveGreedyBestFirstSearch(String startWord, String endWord, English dictionary) {
         // Inisialisasi path
         Map<String, String> rawPath = new HashMap<>();
@@ -164,7 +166,6 @@ public class WordLadderSolver {
 
         // Jika kata saat ini adalah kata akhir, maka pencarian selesai
         if(currentWord == null){
-            System.out.println("path kosong");
             List<Object> result = new ArrayList<>();
             result.add(null);
             result.add(exploredNodes);
@@ -179,24 +180,14 @@ public class WordLadderSolver {
 
         // Cari node-node tetangga yang berbeda satu huruf dengan kata saat ini
         List<String> neighbors = findNeighbors(currentWord, dictionary);
-
         // Urutkan tetangga berdasarkan abjad dan prioritas posisi
-        final String finalCurrentWord = currentWord;
         neighbors.sort(new Comparator<String>() {
             @Override
             public int compare(String word1, String word2) {
-                // Prioritaskan berdasarkan urutan abjad
-                int compareAlpha = word1.compareTo(word2);
-                if (compareAlpha != 0) {
-                    return compareAlpha;
-                } else {
-                    // Jika urutan abjad sama, prioritas posisi dari kiri ke kanan
-                    return finalCurrentWord.indexOf(word1.charAt(0)) - finalCurrentWord.indexOf(word2.charAt(0));
-                }
+                return word1.compareTo(word2);
             }
         });
         
-        System.out.println(neighbors);
         for (String neighbor : neighbors) {
             if (!explored.contains(neighbor)) {
                 // Jika node tetangga belum pernah dikunjungi, tambahkan ke path
@@ -215,10 +206,7 @@ public class WordLadderSolver {
             word = rawPath.get(word);
         }
         rawPath.clear();
-        System.out.println(" gbfs path"+path);
-        // Jika tidak ada path yang ditemukan, return null
 
-        System.out.println("path gbfs tidak kosng"+path);
         // Jika path ditemukan, tambahkan startWord ke path
         if (!path.get(0).equals(startWord)) {
             path.add(0, startWord);
@@ -233,32 +221,33 @@ public class WordLadderSolver {
     // Metode untuk menyelesaikan Word Ladder menggunakan algoritma A*
     public List<Object> solveAStar(String startWord, String endWord, English dictionary) {
         // Inisialisasi antrian prioritas untuk A*
-        PriorityQueue<QueueElementGreedyBFS> queueAStar = new PriorityQueue<>();
-        QueueElementGreedyBFS node = new QueueElementGreedyBFS(heuristic(startWord, endWord), startWord);
+        PriorityQueue<QueueElementGreedyAStar> queueAStar = new PriorityQueue<>();
+        QueueElementGreedyAStar node = new QueueElementGreedyAStar(heuristic(startWord, endWord), startWord);
         queueAStar.add(node);
-
         // Inisialisasi path dan cost
         Map<String, String> rawPath = new HashMap<>();
         Map<String, Double> costSoFar = new HashMap<>();
         costSoFar.put(startWord, 0.0);
         Set<String> explored = new HashSet<>();
         int exploredNodes = 0;
-
         while (!queueAStar.isEmpty()) {
-            QueueElementGreedyBFS currentElement = queueAStar.poll(); // Ambil node dengan prioritas terendah dari antrian prioritas
+            QueueElementGreedyAStar currentElement = queueAStar.poll(); // Ambil node dengan prioritas terendah dari antrian prioritas
             String currentWord = currentElement.word; 
             exploredNodes++; 
-
             // Jika kata saat ini adalah kata akhir, maka pencarian selesai
             if (currentWord.equals(endWord)) {
                 break;
             }
-
             // Tandai kata saat ini sebagai sudah dieksplorasi
             explored.add(currentWord);
-
             // Cari node-node tetangga yang berbeda satu huruf dengan kata saat ini
             List<String> neighbors = findNeighbors(currentWord, dictionary);
+            neighbors.sort(new Comparator<String>() {
+                @Override
+                public int compare(String word1, String word2) {
+                    return word1.compareTo(word2);
+                }
+            });
             for (String neighbor : neighbors) {
                 if (!explored.contains(neighbor)) {
                     // Hitung cost untuk mencapai tetangga ini
@@ -268,14 +257,13 @@ public class WordLadderSolver {
                     if (!costSoFar.containsKey(neighbor) || newCost < costSoFar.get(neighbor)) {
                         costSoFar.put(neighbor, newCost);
                         double priority = newCost + heuristic(neighbor, endWord);
-                        QueueElementGreedyBFS newElement = new QueueElementGreedyBFS(priority, neighbor);
+                        QueueElementGreedyAStar newElement = new QueueElementGreedyAStar(priority, neighbor);
                         queueAStar.add(newElement);
                         rawPath.put(neighbor, currentWord);
                     }
                 }
             }
         }
-
         // Jika tidak ada path yang ditemukan, kembalikan null
         if (!costSoFar.containsKey(endWord)) {
             List<Object> result = new ArrayList<>();
@@ -283,7 +271,6 @@ public class WordLadderSolver {
             result.add(exploredNodes);
             return result;
         }
-
         // Rekonstruksi path dari startWord ke endWord
         List<String> path = new ArrayList<>();
         String word = endWord;
@@ -292,7 +279,6 @@ public class WordLadderSolver {
             word = rawPath.get(word);
         }
         path.add(0, startWord);
-        
         List<Object> result = new ArrayList<>();
         result.add(path);
         result.add(exploredNodes);

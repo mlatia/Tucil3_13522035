@@ -5,7 +5,6 @@ import javax.swing.JTextArea;
 public class Output {
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_RESET = "\u001B[0m";
-
     // Method to print Word Ladder path to JTextArea
     public static void printWordLadder(List<String> path, JTextArea outputTextArea) {
         outputTextArea.setFont(new Font("Poppins", Font.PLAIN, 16));
